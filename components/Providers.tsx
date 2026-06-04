@@ -1,0 +1,2 @@
+'use client';import {useEffect} from 'react';import Lenis from 'lenis';import CustomCursor from './CustomCursor';
+export default function Providers(){useEffect(()=>{const lenis=new Lenis({lerp:.075,wheelMultiplier:.85});let raf=0;const loop=(t:number)=>{lenis.raf(t);raf=requestAnimationFrame(loop)};raf=requestAnimationFrame(loop);return()=>{cancelAnimationFrame(raf);lenis.destroy()}},[]);return <><CustomCursor/><div className="grain"/></>}

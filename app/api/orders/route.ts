@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server';import {z} from 'zod';import {addOrder,getOrders,getProduct} from '@/lib/data';import {isAdmin} from '@/lib/auth';
+const Schema=z.object({productSlug:z.string(),email:z.string().email(),name:z.string().min(1),phone:z.string().optional(),shippingCity:z.string().optional(),note:z.string().optional(),amount:z.number()});
+export async function POST(req:Request){const parsed=Schema.safeParse(await req.json());if(!parsed.success)return NextResponse.json({error:'Invalid request'}, {status:400});const product=await getProduct(parsed.data.productSlug);if(!product)return NextResponse.json({error:'Product unavailable'},{status:404});return NextResponse.json(await addOrder({...parsed.data,amount:product.price}))}
+export async function GET(req:Request){if(!isAdmin(req))return NextResponse.json({error:'Unauthorized'},{status:401});return NextResponse.json(await getOrders())}

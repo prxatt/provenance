@@ -1,0 +1,3 @@
+export type Product={id:string;slug:string;brand:string;name:string;ref:string;price:number;type:string;tag:string;year:number;condition:string;diameter:string;material:string;movement:string;boxPapers:string;location:string;status:string;published:boolean;featured:boolean;image:string;detailImage:string;copy:string;provenance:string}
+export type AccessRequest={id:string;email:string;name?:string;interest?:string;createdAt:string}
+export type Order={id:string;productSlug:string;email:string;name:string;phone?:string;shippingCity?:string;note?:string;amount:number;createdAt:string;status:string}
