@@ -5,11 +5,12 @@ import { getAdminAllowlist, isAdminEmail } from '@/lib/auth';
 import { getClerkSessionEmail } from '@/lib/clerk-session';
 
 export default async function StudioPage() {
+  const isProduction = process.env.NODE_ENV === 'production';
   const hasClerk = Boolean(process.env.CLERK_SECRET_KEY && process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
   const allowlist = getAdminAllowlist();
 
-  if (hasClerk) {
-    if (process.env.NODE_ENV === 'production' && allowlist.length === 0) {
+  if (hasClerk && isProduction) {
+    if (allowlist.length === 0) {
       return (
         <main className="container-lux py-32">
           <p className="kicker">Studio locked</p>
@@ -38,7 +39,35 @@ export default async function StudioPage() {
         </main>
       );
     }
-  } else if (process.env.NODE_ENV === 'production') {
+
+    return (
+      <main className="pt-28">
+        <AdminPanel clerkMode />
+      </main>
+    );
+  }
+
+  if (hasClerk && !isProduction) {
+    const session = await auth();
+    if (session.userId) {
+      const email = await getClerkSessionEmail();
+      if (email && isAdminEmail(email)) {
+        return (
+          <main className="pt-28">
+            <AdminPanel clerkMode />
+          </main>
+        );
+      }
+    }
+
+    return (
+      <main className="pt-28">
+        <AdminPanel clerkMode={false} />
+      </main>
+    );
+  }
+
+  if (isProduction) {
     return (
       <main className="container-lux py-32">
         <p className="kicker">Studio locked</p>
@@ -50,7 +79,7 @@ export default async function StudioPage() {
 
   return (
     <main className="pt-28">
-      <AdminPanel clerkMode={hasClerk} />
+      <AdminPanel clerkMode={false} />
     </main>
   );
 }

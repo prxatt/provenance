@@ -72,7 +72,7 @@ export default function CollectionView({ products, heroImage, watchesImage, jewe
   );
 
   const { watches, jewelry } = splitByCategory(inventory);
-  const showSamples = filter === 'all' || filter === 'watches' || filter === 'jewelry';
+  const showSamples = samples.length > 0;
   const showSplit = filter === 'all' && inventory.length > 0;
 
   return (
@@ -123,7 +123,7 @@ export default function CollectionView({ products, heroImage, watchesImage, jewe
       </section>
 
       <section className="container-lux py-14 md:py-20">
-        {inventory.length === 0 && (!showSamples || samples.length === 0) ? (
+        {inventory.length === 0 && samples.length === 0 ? (
           <div className="panel mx-auto max-w-lg p-12 text-center">
             <p className="kicker">No pieces match</p>
             <h2 className="serif mt-4 text-3xl">Nothing in this view yet.</h2>
