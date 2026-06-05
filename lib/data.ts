@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { isInventoryProduct } from './catalog';
+import { isInventoryProduct, isAvailableSku } from './catalog';
 import { HIGH_VALUE_THRESHOLD, ORDER_STATUS } from './constants';
 import type { Product, AccessRequest, Order, AuditEntry } from './types';
 
@@ -44,6 +44,13 @@ export async function getCollectionCatalog() {
 export async function getProduct(slug: string) {
   const product = (await getProducts(true)).find((p) => p.slug === slug);
   if (!product || !isInventoryProduct(product)) return undefined;
+  return product;
+}
+
+/** Purchasable inventory only — status must be Available. */
+export async function getPurchasableProduct(slug: string) {
+  const product = await getProduct(slug);
+  if (!product || !isAvailableSku(product)) return undefined;
   return product;
 }
 

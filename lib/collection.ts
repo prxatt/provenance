@@ -49,9 +49,7 @@ export function filterAndSortCollection(products: Product[], filter: CollectionF
   );
 }
 
-export function isAvailableSku(p: Product) {
-  return p.verified && !p.mockLayout && p.status === 'Available';
-}
+export { isAvailableSku } from './catalog';
 
 export function splitByCategory(products: Product[]) {
   return {

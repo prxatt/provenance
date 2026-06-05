@@ -1,7 +1,12 @@
 import type { Product } from './types';
+import { PRODUCT_STATUS_AVAILABLE } from './constants';
 
 export function isInventoryProduct(p: Product) {
   return p.published && !p.mockLayout && p.verified;
+}
+
+export function isAvailableSku(p: Product) {
+  return isInventoryProduct(p) && p.status === PRODUCT_STATUS_AVAILABLE;
 }
 
 export function isMockLayoutProduct(p: Product) {

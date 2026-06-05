@@ -1,4 +1,69 @@
-import Image from 'next/image';import {notFound} from 'next/navigation';import {getProduct,money} from '@/lib/data';import {productCardImage} from '@/lib/catalog';import CheckoutForm from './CheckoutForm';
-export default async function Checkout({params}:{params:Promise<{slug:string}>}){const {slug}=await params;const p=await getProduct(slug);if(!p)notFound();return <main className="pt-24"><section className="checkout-grid container-lux grid gap-12 py-12 lg:grid-cols-2"><div><p className="kicker">1. Your Order</p><h1 className="h2 mt-4">Checkout</h1><div className="mt-10 flex gap-8 border-b border-white/10 pb-8"><div className="relative h-48 w-64 overflow-hidden border border-white/10 bg-[#050505]"><Image src={productCardImage(p)} alt={p.name} fill className="object-cover object-top opacity-80"/></div><div><h2 className="serif text-3xl">{p.brand} {p.name}</h2><p className="mt-2 text-sm text-white/45">Ref. {p.ref}</p><p className="mt-5 text-sm text-white/55">Condition: {p.condition}</p><p className="text-sm text-white/55">{p.boxPapers}</p><p className="serif mt-7 text-3xl">{money(p.price)}</p></div></div><div className="mt-8 space-y-4 text-sm text-white/55"><Row k="Subtotal" v={money(p.price)}/><Row k="Shipping" v="Complimentary"/><Row k="Insurance" v="Included"/><Row k="Total" v={money(p.price)} big/></div><div className="mt-10 grid gap-4 md:grid-cols-3"><Trust t="Authenticity Guaranteed"/><Trust t="Fully Insured"/><Trust t="Trust & Discretion"/></div></div><div className="border-l border-white/10 pl-0 lg:pl-12"><p className="kicker">2. Secure Request</p><CheckoutForm product={p}/></div></section></main>}
-function Row({k,v,big=false}:{k:string;v:string;big?:boolean}){return <div className={`flex justify-between border-b border-white/10 pb-4 ${big?'text-xl text-white':''}`}><span>{k}</span><span>{v}</span></div>}
-function Trust({t}:{t:string}){return <div className="panel p-4"><p className="text-[10px] uppercase tracking-[.2em] text-white/75">{t}</p></div>}
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { getPurchasableProduct, money } from '@/lib/data';
+import { productCardImage } from '@/lib/catalog';
+import CheckoutForm from './CheckoutForm';
+
+export default async function Checkout({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const p = await getPurchasableProduct(slug);
+  if (!p) notFound();
+
+  return (
+    <main className="pt-24">
+      <section className="checkout-grid container-lux grid gap-12 py-12 lg:grid-cols-2">
+        <div>
+          <p className="kicker">1. Your Order</p>
+          <h1 className="h2 mt-4">Checkout</h1>
+          <div className="mt-10 flex gap-8 border-b border-white/10 pb-8">
+            <div className="relative h-48 w-64 overflow-hidden border border-white/10 bg-[#050505]">
+              <Image src={productCardImage(p)} alt={p.name} fill className="object-cover object-top opacity-80" />
+            </div>
+            <div>
+              <h2 className="serif text-3xl">
+                {p.brand} {p.name}
+              </h2>
+              <p className="mt-2 text-sm text-white/45">Ref. {p.ref}</p>
+              <p className="mt-5 text-sm text-white/55">Condition: {p.condition}</p>
+              <p className="text-sm text-white/55">{p.boxPapers}</p>
+              <p className="serif mt-7 text-3xl">{money(p.price)}</p>
+            </div>
+          </div>
+          <div className="mt-8 space-y-4 text-sm text-white/55">
+            <Row k="Subtotal" v={money(p.price)} />
+            <Row k="Shipping" v="Complimentary" />
+            <Row k="Insurance" v="Included" />
+            <Row k="Total" v={money(p.price)} big />
+          </div>
+          <div className="mt-10 grid gap-4 md:grid-cols-3">
+            <Trust t="Authenticity Guaranteed" />
+            <Trust t="Fully Insured" />
+            <Trust t="Trust & Discretion" />
+          </div>
+        </div>
+        <div className="border-l border-white/10 pl-0 lg:pl-12">
+          <p className="kicker">2. Secure Request</p>
+          <CheckoutForm product={p} />
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function Row({ k, v, big = false }: { k: string; v: string; big?: boolean }) {
+  return (
+    <div className={`flex justify-between border-b border-white/10 pb-4 ${big ? 'text-xl text-white' : ''}`}>
+      <span>{k}</span>
+      <span>{v}</span>
+    </div>
+  );
+}
+
+function Trust({ t }: { t: string }) {
+  return (
+    <div className="panel p-4">
+      <p className="text-[10px] uppercase tracking-[.2em] text-white/75">{t}</p>
+    </div>
+  );
+}

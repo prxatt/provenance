@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { addOrder, getOrders, getProduct } from '@/lib/data';
+import { addOrder, getOrders, getPurchasableProduct } from '@/lib/data';
 import { isAdmin } from '@/lib/auth';
 
 const AckSchema = z.object({
@@ -25,8 +25,8 @@ export async function POST(req: Request) {
   const parsed = Schema.safeParse(await req.json());
   if (!parsed.success) return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
 
-  const product = await getProduct(parsed.data.productSlug);
-  if (!product) return NextResponse.json({ error: 'Product unavailable' }, { status: 404 });
+  const product = await getPurchasableProduct(parsed.data.productSlug);
+  if (!product) return NextResponse.json({ error: 'Product unavailable for purchase' }, { status: 404 });
 
   const ack = parsed.data.acknowledgements;
   if (!ack.finalSale || !ack.insuredShipping || !ack.authenticity || !ack.preOwnedLegal) {

@@ -5,7 +5,7 @@ import Revealer from '@/components/Revealer';
 import ProductFeatureBand from '@/components/ProductFeatureBand';
 import ProductStage from '@/components/ProductStage';
 import { getProduct, getProducts, money } from '@/lib/data';
-import { productGallery } from '@/lib/catalog';
+import { productGallery, isAvailableSku } from '@/lib/catalog';
 import ProductCard from '@/components/ProductCard';
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -17,6 +17,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     .filter((x) => x.slug !== p.slug && (x.type === p.type || x.category === p.category))
     .slice(0, 3);
   const gallery = productGallery(p);
+  const available = isAvailableSku(p);
 
   return (
     <main className="pt-20">
@@ -40,11 +41,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <span className="text-white/70">Reference {p.ref}</span>
             </h1>
             <p className="serif mt-7 text-3xl md:text-4xl">{money(p.price)}</p>
-            {p.verified && (
+            {available ? (
               <p className="mt-4 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.24em] text-emerald-400">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 Available · Verified origin
               </p>
+            ) : (
+              p.verified && (
+                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[.24em] text-white/45">
+                  {p.status} · Verified origin
+                </p>
+              )
             )}
             <div className="my-7 h-px w-10 bg-[var(--gold)]" />
             <div className="grid grid-cols-2 gap-px border border-white/10 bg-white/10 md:grid-cols-4">
@@ -59,10 +66,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
             <p className="body mt-8 max-w-2xl">{p.description}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link className="btn" href={`/checkout/${p.slug}`}>
-                <span>Secure This Piece</span>
-                <span>→</span>
-              </Link>
+              {available ? (
+                <Link className="btn" href={`/checkout/${p.slug}`}>
+                  <span>Secure This Piece</span>
+                  <span>→</span>
+                </Link>
+              ) : (
+                <Link className="btn" href="/access">
+                  <span>Inquire About This Piece</span>
+                  <span>→</span>
+                </Link>
+              )}
               <button type="button" className="btn btn-white">
                 <span>Save</span>
                 <span>◇</span>
