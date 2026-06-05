@@ -73,21 +73,29 @@ export default function AdminPanel({ clerkMode = false }: { clerkMode?: boolean 
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setMsg('Saving…');
+    const payload = {
+      ...edit,
+      price: Number(edit.price),
+      year: Number(edit.year),
+      published: edit.mockLayout ? false : edit.published,
+      featured: edit.mockLayout ? false : edit.featured,
+      galleryImages: (edit.galleryImages ?? []).length ? edit.galleryImages : [edit.heroImage],
+    };
     const res = await fetch('/api/products', {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
         ...(clerkMode ? {} : { 'x-admin-token': token }),
       },
-      body: JSON.stringify({
-        ...edit,
-        price: Number(edit.price),
-        year: Number(edit.year),
-        galleryImages: (edit.galleryImages ?? []).length ? edit.galleryImages : [edit.heroImage],
-      }),
+      body: JSON.stringify(payload),
     });
-    setMsg(res.ok ? 'Saved.' : 'Save failed.');
-    if (res.ok) load();
+    if (!res.ok) {
+      const data = (await res.json().catch(() => null)) as { error?: string } | null;
+      setMsg(data?.error || 'Save failed.');
+      return;
+    }
+    setMsg('Saved.');
+    load();
   }
 
   function set<K extends keyof Product>(k: K, v: Product[K]) {
@@ -273,7 +281,19 @@ export default function AdminPanel({ clerkMode = false }: { clerkMode?: boolean 
                 <input type="checkbox" checked={edit.verified} onChange={(e) => set('verified', e.target.checked)} /> Verified
               </label>
               <label>
-                <input type="checkbox" checked={edit.mockLayout} onChange={(e) => set('mockLayout', e.target.checked)} /> Mock layout only
+                <input
+                  type="checkbox"
+                  checked={edit.mockLayout}
+                  onChange={(e) => {
+                    const mockLayout = e.target.checked;
+                    setEdit({
+                      ...edit,
+                      mockLayout,
+                      ...(mockLayout ? { published: false, featured: false } : {}),
+                    });
+                  }}
+                />{' '}
+                Mock layout only
               </label>
             </div>
             <button className="btn mt-6 w-full">

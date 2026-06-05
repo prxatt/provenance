@@ -4,6 +4,14 @@ import { getProducts, saveProducts, appendAudit } from '@/lib/data';
 import { getAdminActor, isAdmin } from '@/lib/auth';
 import type { Product } from '@/lib/types';
 
+const FeatureSectionSchema = z.object({
+  kicker: z.string(),
+  title: z.string(),
+  body: z.string(),
+  image: z.string(),
+  imagePosition: z.enum(['left', 'right']).optional(),
+});
+
 const ProductSchema = z
   .object({
     id: z.string().optional(),
@@ -36,6 +44,7 @@ const ProductSchema = z
     provenanceCopy: z.string(),
     sortOrder: z.number(),
     listedAt: z.string().refine((s) => !Number.isNaN(Date.parse(s)), { message: 'Invalid ISO datetime' }),
+    featureSections: z.array(FeatureSectionSchema).optional(),
   })
   .refine((d) => !d.mockLayout || !d.published, {
     message: 'MOCK_LAYOUT_ONLY pieces cannot be published as inventory',
@@ -51,12 +60,24 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   if (!(await isAdmin(req))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const parsed = ProductSchema.safeParse(await req.json());
+
+  const raw = (await req.json()) as Product;
+  const normalized = {
+    ...raw,
+    published: raw.mockLayout ? false : raw.published,
+    featured: raw.mockLayout ? false : raw.featured,
+  };
+
+  const parsed = ProductSchema.safeParse(normalized);
   if (!parsed.success) {
     return NextResponse.json({ error: 'Invalid product', issues: parsed.error.flatten() }, { status: 400 });
   }
 
   const products = await getProducts(true);
+  const i = parsed.data.id ? products.findIndex((p) => p.id === parsed.data.id) : -1;
+  const isUpdate = i >= 0;
+  const existing = isUpdate ? products[i] : undefined;
+
   const product: Product = {
     ...parsed.data,
     id: parsed.data.id || crypto.randomUUID(),
@@ -64,10 +85,8 @@ export async function POST(req: Request) {
     featured: parsed.data.mockLayout ? false : parsed.data.featured,
     listedAt: parsed.data.listedAt || new Date().toISOString(),
     galleryImages: parsed.data.galleryImages.length ? parsed.data.galleryImages : [parsed.data.heroImage],
+    featureSections: parsed.data.featureSections ?? existing?.featureSections,
   };
-
-  const i = products.findIndex((p) => p.id === product.id);
-  const isUpdate = i >= 0;
 
   const duplicateSlug = products.some((p) => p.slug === product.slug && p.id !== product.id);
   if (duplicateSlug) {

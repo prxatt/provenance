@@ -166,6 +166,65 @@ async function main() {
     assert(res.status === 400, `expected 400, got ${res.status}`);
   });
 
+  await test('admin accepts mock layout when published was left true', async () => {
+    const slug = `mock-layout-test-${Date.now()}`;
+    const res = await fetch(`${BASE}/api/products`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-admin-token': ADMIN_TOKEN },
+      body: JSON.stringify({
+        slug,
+        brand: 'Test',
+        name: 'Mock Layout',
+        ref: 'MOCK',
+        price: 1,
+        type: 'Watch',
+        tag: 'Test',
+        year: 2024,
+        condition: 'Sample',
+        caseSize: '—',
+        material: '—',
+        movement: '—',
+        boxPapers: 'Sample',
+        location: '—',
+        status: 'Layout Sample',
+        published: true,
+        featured: true,
+        category: 'watches',
+        gender: 'men',
+        verified: false,
+        mockLayout: true,
+        heroImage: '/images/watches/watches.png',
+        cardImage: '/images/watches/watches.png',
+        galleryImages: [],
+        modelUrl: '',
+        description: 'layout sample',
+        provenanceCopy: 'layout sample',
+        sortOrder: 999,
+        listedAt: new Date().toISOString(),
+      }),
+    });
+    assert(res.ok, `expected 200, got ${res.status}`);
+    const product = await res.json();
+    assert(product.mockLayout && !product.published && !product.featured, 'mock should clear publish flags');
+  });
+
+  await test('admin save preserves featureSections on tennis bracelet', async () => {
+    const listRes = await fetch(`${BASE}/api/products`, { headers: { 'x-admin-token': ADMIN_TOKEN } });
+    assert(listRes.ok, 'products list failed');
+    const products = await listRes.json();
+    const tennis = products.find((p) => p.slug === 'diamond-tennis-bracelet');
+    assert(tennis?.featureSections?.length, 'tennis bracelet needs featureSections in catalog');
+
+    const saveRes = await fetch(`${BASE}/api/products`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-admin-token': ADMIN_TOKEN },
+      body: JSON.stringify({ ...tennis, description: tennis.description }),
+    });
+    assert(saveRes.ok, `save failed: ${saveRes.status}`);
+    const saved = await saveRes.json();
+    assert(saved.featureSections?.length === tennis.featureSections.length, 'featureSections were dropped on save');
+  });
+
   await test('tennis bracelet PDP loads', async () => {
     const res = await fetch(`${BASE}/product/diamond-tennis-bracelet`);
     assert(res.ok, `expected 200, got ${res.status}`);
