@@ -32,9 +32,19 @@ Admin can add, edit, publish/unpublish products and review access requests + ord
 The checkout is a high-trust request/order flow, not live card processing. Add Stripe Checkout when inventory, tax, escrow, and fulfillment rules are finalized.
 
 ## Deploy (Vercel)
-This repo is linked to [Vercel — provenance](https://vercel.com/pratt/provenance). Pushes to `main` trigger preview/production deploys.
 
-Set these environment variables in the Vercel project:
+**Live project:** [provenance](https://vercel.com/pratt/provenance) — not `provenance-upgraded` (that project has no deployments and returns 404).
+
+| URL | Branch |
+|-----|--------|
+| https://provenance-pratt.vercel.app | `main` (production) |
+| PR previews | `feat/*` branches via GitHub |
+
+Pushes to `main` deploy production. Open PRs get preview URLs on the **provenance** project.
+
+If you see `404 NOT_FOUND` / `DEPLOYMENT_NOT_FOUND`, confirm you are on `provenance-pratt.vercel.app` or a PR preview link from the provenance project — not `provenance-upgraded.vercel.app`.
+
+Set these environment variables in the Vercel **provenance** project:
 
 | Variable | Purpose |
 |----------|---------|

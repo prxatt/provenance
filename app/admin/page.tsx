@@ -1,2 +1,6 @@
-import AdminPanel from './panel';
-export default function Admin(){return <main className="pt-28"><AdminPanel/></main>}
+import { notFound } from 'next/navigation';
+
+/** Legacy public admin — permanently removed. Use ADMIN_PATH studio route. */
+export default function LegacyAdmin() {
+  notFound();
+}

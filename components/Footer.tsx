@@ -1,2 +1,28 @@
 import Link from 'next/link';
-export default function Footer(){return <footer className="border-t border-white/10 bg-black py-14"><div className="container-lux grid gap-10 md:grid-cols-4"><div><p className="serif tracking-[.45em]">PROVENANCE</p><p className="mt-4 text-[10px] uppercase tracking-[.2em] text-white/40">A Surface Tension Company</p></div><p className="body md:col-span-2">Curated watches and fine jewelry with verified origin, documented condition, insured transfer, and concierge-level discretion.</p><div className="flex flex-col gap-3 text-[10px] uppercase tracking-[.18em] text-white/45"><Link href="/legal/terms">Terms of Sale</Link><Link href="/legal/shipping">Shipping</Link><Link href="/legal/authentication">Authentication</Link><Link href="/legal/privacy">Privacy</Link></div></div></footer>}
+
+export default function Footer() {
+  return (
+    <footer className="border-t border-white/10 bg-black py-14">
+      <div className="container-lux grid gap-10 md:grid-cols-4">
+        <div>
+          <p className="serif tracking-[.45em]">PROVENANCE</p>
+          <p className="mt-4 text-[10px] uppercase tracking-[.2em] text-white/40">A Surface Tension Company</p>
+        </div>
+        <p className="body md:col-span-2">
+          Curated watches and fine jewelry with verified origin, documented condition, insured transfer, and
+          concierge-level discretion.
+        </p>
+        <div className="flex flex-col gap-3 text-[10px] uppercase tracking-[.18em] text-white/45">
+          <Link href="/legal/terms">Terms of Sale</Link>
+          <Link href="/legal/shipping">Shipping & Insurance</Link>
+          <Link href="/legal/authentication">Authentication</Link>
+          <Link href="/legal/privacy">Privacy</Link>
+          <Link href="/legal/consignment">Consignment</Link>
+          <Link href="/legal/condition-report">Condition Report</Link>
+          <Link href="/legal/disputes">Disputes</Link>
+          <Link href="/legal/international">International</Link>
+        </div>
+      </div>
+    </footer>
+  );
+}

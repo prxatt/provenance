@@ -1,3 +1,37 @@
-import Revealer from '@/components/Revealer';
-const sections=[['All Sales Final','All sales are final once a purchase is completed. Please review images, condition notes, reference information, and included documentation before purchase.'],['Pre-Owned Condition','Watches and jewelry may show signs of wear consistent with age and use. We provide clear condition reporting and high-resolution imagery.'],['Authenticity Guarantee','Every item sold by PROVENANCE is represented as authentic and vetted before listing. If an item is proven not authentic, we will review and remedy the matter according to the authentication policy.'],['Shipping & Insurance','All eligible orders ship fully insured with signature confirmation and discreet packaging.']] as const;
-export default function Legal(){return <main className="pt-32"><section className="container-lux max-w-5xl"><Revealer><p className="kicker">Legal</p><h1 className="h1 mt-5">Terms of Sale</h1><p className="body mt-6 max-w-xl">By engaging with PROVENANCE, you agree to the following standards and disclosures.</p></Revealer><div className="mt-14 border-t border-white/10">{sections.map(([h,b],i)=><section key={h} className="border-b border-white/10 py-12"><p className="text-sm text-[var(--gold)]">{String(i+1).padStart(2,'0')}</p><h2 className="serif mt-4 text-4xl">{h}</h2><p className="body mt-5 max-w-2xl">{b}</p></section>)}</div></section></main>}
+import LegalPageLayout from '@/components/LegalPageLayout';
+
+const disclaimer =
+  'This page provides operational policy language for the PROVENANCE prototype. Have qualified U.S. counsel review all terms before accepting live transactions.';
+
+export default function TermsPage() {
+  return (
+    <LegalPageLayout
+      kicker="Legal"
+      title="Terms of Sale"
+      intro="By engaging with PROVENANCE, you agree to the following standards and disclosures for high-value pre-owned goods."
+      disclaimer={disclaimer}
+      sections={[
+        {
+          title: 'All Sales Final',
+          body: 'All sales are final once a purchase is completed. Please review images, condition notes, reference information, and included documentation before purchase. Returns are not offered except where required by applicable law or expressly stated in writing.',
+        },
+        {
+          title: 'Pre-Owned Condition',
+          body: 'Watches and jewelry may show signs of wear consistent with age and use unless otherwise stated. We provide clear condition reporting and high-resolution imagery. You are responsible for reviewing the listing before purchase.',
+        },
+        {
+          title: 'Authenticity Guarantee',
+          body: 'Items represented as verified have undergone PROVENANCE review appropriate to the listing. We do not claim third-party laboratory certification unless explicitly disclosed. If an item is proven not authentic under our authentication policy, we will review and remedy according to that policy.',
+        },
+        {
+          title: 'Shipping & Insurance',
+          body: 'Eligible orders ship fully insured with signature confirmation and discreet packaging. Risk of loss transfers according to the carrier terms and our shipping policy once the shipment is accepted by the carrier.',
+        },
+        {
+          title: 'High-Value Review',
+          body: 'Orders above $25,000 may require additional identity verification, payment review, and private purchase approval before fulfillment.',
+        },
+      ]}
+    />
+  );
+}
