@@ -5,8 +5,8 @@ function adminPublicPath() {
   return (process.env.ADMIN_PATH || '/_studio-provenance-private').replace(/\/$/, '');
 }
 
-/** Lightweight edge middleware — Clerk auth runs in Node studio routes/APIs to avoid Edge bundle issues on Vercel. */
-export function middleware(req: NextRequest) {
+/** Node.js proxy (Next.js 16+) — blocks legacy /admin, sets noindex on studio routes. */
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const publicAdmin = adminPublicPath();
 

@@ -25,6 +25,11 @@ function assert(cond, msg) {
 }
 
 async function main() {
+  await test('homepage returns 200', async () => {
+    const res = await fetch(`${BASE}/`);
+    assert(res.ok, `expected 200, got ${res.status}`);
+  });
+
   await test('/admin returns 404', async () => {
     const res = await fetch(`${BASE}/admin`);
     assert(res.status === 404, `expected 404, got ${res.status}`);
