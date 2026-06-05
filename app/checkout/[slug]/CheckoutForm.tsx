@@ -15,6 +15,7 @@ type Acknowledgements = {
 export default function CheckoutForm({ product }: { product: Product }) {
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [ack, setAck] = useState<Acknowledgements>({
     finalSale: false,
     insuredShipping: false,
@@ -28,6 +29,7 @@ export default function CheckoutForm({ product }: { product: Product }) {
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!allChecked) return;
+    setError(null);
     setLoading(true);
     const f = new FormData(e.currentTarget);
     const payload = {
@@ -40,13 +42,23 @@ export default function CheckoutForm({ product }: { product: Product }) {
       amount: product.price,
       acknowledgements: ack,
     };
-    const res = await fetch('/api/orders', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: { 'content-type': 'application/json' },
-    });
-    setLoading(false);
-    if (res.ok) setDone(true);
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'content-type': 'application/json' },
+      });
+      if (res.ok) {
+        setDone(true);
+        return;
+      }
+      const data = (await res.json().catch(() => null)) as { error?: string } | null;
+      setError(data?.error || `Purchase request failed (${res.status}). Please try again.`);
+    } catch {
+      setError('Network error. Check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (done) {
@@ -103,6 +115,12 @@ export default function CheckoutForm({ product }: { product: Product }) {
         <span>{loading ? 'Securing…' : `Request Purchase ${money(product.price)}`}</span>
         <span>→</span>
       </button>
+
+      {error && (
+        <p className="border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300" role="alert">
+          {error}
+        </p>
+      )}
 
       <p className="body text-xs">
         Payment is not captured in this prototype. Stripe Checkout Session integration is prepared for production.

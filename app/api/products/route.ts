@@ -30,12 +30,12 @@ const ProductSchema = z
     mockLayout: z.boolean(),
     heroImage: z.string(),
     cardImage: z.string(),
-    galleryImages: z.array(z.string()),
-    modelUrl: z.string(),
+    galleryImages: z.array(z.string()).default([]),
+    modelUrl: z.string().default(''),
     description: z.string(),
     provenanceCopy: z.string(),
     sortOrder: z.number(),
-    listedAt: z.string(),
+    listedAt: z.string().refine((s) => !Number.isNaN(Date.parse(s)), { message: 'Invalid ISO datetime' }),
   })
   .refine((d) => !d.mockLayout || !d.published, {
     message: 'MOCK_LAYOUT_ONLY pieces cannot be published as inventory',
@@ -63,10 +63,17 @@ export async function POST(req: Request) {
     published: parsed.data.mockLayout ? false : parsed.data.published,
     featured: parsed.data.mockLayout ? false : parsed.data.featured,
     listedAt: parsed.data.listedAt || new Date().toISOString(),
+    galleryImages: parsed.data.galleryImages.length ? parsed.data.galleryImages : [parsed.data.heroImage],
   };
 
-  const i = products.findIndex((p) => p.id === product.id || p.slug === product.slug);
+  const i = products.findIndex((p) => p.id === product.id);
   const isUpdate = i >= 0;
+
+  const duplicateSlug = products.some((p) => p.slug === product.slug && p.id !== product.id);
+  if (duplicateSlug) {
+    return NextResponse.json({ error: 'Product slug must be unique' }, { status: 400 });
+  }
+
   if (isUpdate) products[i] = product;
   else products.unshift(product);
 

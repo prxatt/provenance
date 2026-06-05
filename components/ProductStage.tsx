@@ -23,7 +23,7 @@ export default function ProductStage({ product, images }: Props) {
           alt={`${product.brand} ${product.name}`}
           fill
           priority
-          className="object-cover object-top opacity-90 saturate-75 transition-opacity duration-500"
+          className="object-cover object-center opacity-90 saturate-75 transition-opacity duration-500"
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,transparent,rgba(0,0,0,.88)_70%)]" />
         {product.modelUrl && (
@@ -34,15 +34,15 @@ export default function ProductStage({ product, images }: Props) {
         )}
       </div>
       {images.length > 1 && (
-        <div className="grid grid-cols-4 gap-2 border-t border-white/10 bg-black p-4">
+        <div className="flex gap-2 overflow-x-auto border-t border-white/10 bg-black p-4">
           {images.map((src, i) => (
             <button
               key={src}
               type="button"
               onClick={() => setActive(i)}
-              className={`relative aspect-square overflow-hidden border bg-[#050505] transition ${i === active ? 'border-[var(--gold)]' : 'border-white/10 opacity-60 hover:opacity-100'}`}
+              className={`relative h-16 w-16 shrink-0 overflow-hidden border bg-[#050505] transition sm:h-20 sm:w-20 ${i === active ? 'border-[var(--gold)]' : 'border-white/10 opacity-60 hover:opacity-100'}`}
             >
-              <Image src={src} alt="" fill className="object-cover object-top" />
+              <Image src={src} alt="" fill className="object-cover object-center" />
             </button>
           ))}
         </div>

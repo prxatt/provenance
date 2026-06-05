@@ -6,7 +6,7 @@ import { money } from '@/lib/format';
 
 type AdminData = { products: Product[]; access: AccessRequest[]; orders: Order[] };
 
-const blank: Product = {
+const getBlankProduct = (): Product => ({
   id: '',
   slug: '',
   brand: '',
@@ -37,14 +37,14 @@ const blank: Product = {
   provenanceCopy: '',
   sortOrder: 99,
   listedAt: new Date().toISOString(),
-};
+});
 
 export default function AdminPanel({ clerkMode = false }: { clerkMode?: boolean }) {
   const [token, setToken] = useState('');
   const [data, setData] = useState<AdminData | null>(null);
   const [audit, setAudit] = useState<{ action: string; actor: string; target?: string; createdAt: string }[]>([]);
   const [msg, setMsg] = useState('');
-  const [edit, setEdit] = useState<Product>(blank);
+  const [edit, setEdit] = useState<Product>(getBlankProduct);
 
   async function load() {
     setMsg('Loading…');
@@ -82,7 +82,7 @@ export default function AdminPanel({ clerkMode = false }: { clerkMode?: boolean 
         ...edit,
         price: Number(edit.price),
         year: Number(edit.year),
-        galleryImages: edit.galleryImages.length ? edit.galleryImages : [edit.heroImage],
+        galleryImages: (edit.galleryImages ?? []).length ? edit.galleryImages : [edit.heroImage],
       }),
     });
     setMsg(res.ok ? 'Saved.' : 'Save failed.');
@@ -130,7 +130,7 @@ export default function AdminPanel({ clerkMode = false }: { clerkMode?: boolean 
                 {data.products.map((p) => (
                   <button
                     key={p.id}
-                    onClick={() => setEdit(p)}
+                    onClick={() => setEdit({ ...p, galleryImages: p.galleryImages ?? [] })}
                     className="flex w-full items-center justify-between border-b border-white/10 py-4 text-left transition hover:bg-white/[.025]"
                   >
                     <span>
@@ -174,7 +174,7 @@ export default function AdminPanel({ clerkMode = false }: { clerkMode?: boolean 
           <form onSubmit={save} className="panel h-max p-6">
             <div className="flex items-center justify-between">
               <h2 className="serif text-4xl">Edit Piece</h2>
-              <button type="button" onClick={() => setEdit(blank)} className="text-[10px] uppercase tracking-[.2em] text-[var(--gold)]">
+              <button type="button" onClick={() => setEdit(getBlankProduct())} className="text-[10px] uppercase tracking-[.2em] text-[var(--gold)]">
                 New
               </button>
             </div>
@@ -239,7 +239,7 @@ export default function AdminPanel({ clerkMode = false }: { clerkMode?: boolean 
               </select>
               <input
                 className="field md:col-span-2"
-                value={edit.galleryImages.join(', ')}
+                value={(edit.galleryImages ?? []).join(', ')}
                 onChange={(e) =>
                   set(
                     'galleryImages',

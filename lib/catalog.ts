@@ -13,5 +13,6 @@ export function productHeroImage(p: Product) {
 }
 
 export function productGallery(p: Product) {
-  return p.galleryImages?.length ? p.galleryImages : [productHeroImage(p)];
+  const images = p.galleryImages?.filter(Boolean) ?? [];
+  return images.length ? images : [productHeroImage(p)];
 }

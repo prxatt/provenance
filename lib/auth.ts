@@ -1,12 +1,8 @@
-import { auth } from '@clerk/nextjs/server';
 import type { NextRequest } from 'next/server';
+import { getClerkSessionEmail } from './clerk-session';
+import { getAdminAllowlist } from './admin-allowlist';
 
-export function getAdminAllowlist(): string[] {
-  return (process.env.ADMIN_ALLOWLIST_EMAILS || '')
-    .split(',')
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-}
+export { getAdminAllowlist } from './admin-allowlist';
 
 export function isDevTokenAdmin(req: Request | NextRequest) {
   const token = req.headers.get('x-admin-token') || '';
@@ -15,9 +11,8 @@ export function isDevTokenAdmin(req: Request | NextRequest) {
 
 export async function getAdminActor(): Promise<string | null> {
   try {
-    const session = await auth();
-    const email = session.sessionClaims?.email as string | undefined;
-    if (email && getAdminAllowlist().includes(email.toLowerCase())) return email;
+    const email = await getClerkSessionEmail();
+    if (email && getAdminAllowlist().includes(email)) return email;
   } catch {
     /* Clerk not configured */
   }

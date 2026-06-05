@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Revealer from '@/components/Revealer';
+import ProductFeatureBand from '@/components/ProductFeatureBand';
 import ProductStage from '@/components/ProductStage';
 import { getProduct, getProducts, money } from '@/lib/data';
 import { productGallery } from '@/lib/catalog';
@@ -96,6 +97,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </section>
         </div>
       </section>
+
+      {p.featureSections?.map((section, i) => (
+        <ProductFeatureBand key={`${section.title}-${i}`} section={section} index={i} />
+      ))}
 
       <section className="container-lux py-24">
         <p className="kicker">Related Pieces</p>

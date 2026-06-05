@@ -1,6 +1,14 @@
 export type ProductCategory = 'watches' | 'jewelry';
 export type ProductGender = 'men' | 'women' | 'unisex';
 
+export type ProductFeatureSection = {
+  kicker: string;
+  title: string;
+  body: string;
+  image: string;
+  imagePosition?: 'left' | 'right';
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -28,6 +36,7 @@ export type Product = {
   cardImage: string;
   heroImage: string;
   galleryImages: string[];
+  featureSections?: ProductFeatureSection[];
   modelUrl: string;
   sortOrder: number;
   listedAt: string;

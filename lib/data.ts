@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { isInventoryProduct } from './catalog';
+import { HIGH_VALUE_THRESHOLD, ORDER_STATUS } from './constants';
 import type { Product, AccessRequest, Order, AuditEntry } from './types';
 
 const dataDir = path.join(process.cwd(), 'data');
@@ -68,7 +69,7 @@ export async function addOrder(r: Omit<Order, 'id' | 'createdAt' | 'status'>) {
     ...r,
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
-    status: r.amount > 25000 ? 'Pending private purchase review' : 'Pending concierge review',
+    status: r.amount > HIGH_VALUE_THRESHOLD ? ORDER_STATUS.highValue : ORDER_STATUS.standard,
   };
   list.unshift(item);
   await writeJson('orders.json', list);

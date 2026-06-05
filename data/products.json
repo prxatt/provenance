@@ -168,11 +168,11 @@
     "id": "tennis",
     "slug": "diamond-tennis-bracelet",
     "brand": "PROVENANCE",
-    "name": "Diamond Tennis Bracelet",
+    "name": "Tennis Bracelet",
     "ref": "18K-WG-7CT",
     "price": 18200,
     "type": "Jewelry",
-    "tag": "Fine Jewelry",
+    "tag": "Women",
     "gender": "women",
     "category": "jewelry",
     "verified": true,
@@ -182,18 +182,59 @@
     "condition": "Verified",
     "year": 2024,
     "location": "New York, NY",
-    "caseSize": "7 ct total",
+    "caseSize": "7.00 ct total",
     "material": "18K White Gold",
-    "movement": "Natural Diamonds",
+    "movement": "Round Brilliant · VS · F–G",
     "boxPapers": "Certificate Included",
-    "description": "A discreet line of light. Built for permanence, photographed and documented before transfer.",
-    "provenanceCopy": "Stone count, metal, setting integrity, and certificate packet reviewed before listing.",
-    "cardImage": "/images/jewelry/jewelry.png",
-    "heroImage": "/images/pdp/diamond-tennis-bracelet/pdp-diamond-tennis-bracelet.png",
+    "description": "Elegant on the wrist. Timeless in every light. A continuous line of round brilliant diamonds in 18K white gold — matched for fire, brilliance, and symmetry.",
+    "provenanceCopy": "Stone count, metal purity, setting integrity, and certificate packet independently verified before listing. Reference 18K-WG-7CT documented on included certificate of authenticity.",
+    "cardImage": "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-master.png",
+    "heroImage": "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-master.png",
     "galleryImages": [
-      "/images/pdp/diamond-tennis-bracelet/pdp-diamond-tennis-bracelet.png",
-      "/images/jewelry/jewelry.png",
-      "/images/about/about.png"
+      "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-master.png",
+      "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-cine.png",
+      "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-detail.png",
+      "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-engineering.png",
+      "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-person.png",
+      "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-size.png",
+      "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-certificate.png"
+    ],
+    "featureSections": [
+      {
+        "kicker": "Women",
+        "title": "Tennis Bracelet",
+        "body": "Elegant on the wrist. Timeless in every light.",
+        "image": "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-person.png",
+        "imagePosition": "left"
+      },
+      {
+        "kicker": "Detail",
+        "title": "Stone Line",
+        "body": "Matched for fire, brilliance and symmetry. Every stone individually inspected.",
+        "image": "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-detail.png",
+        "imagePosition": "right"
+      },
+      {
+        "kicker": "Detail",
+        "title": "Clasp Engineering",
+        "body": "Hidden box clasp with dual safety locks for absolute security and seamless appearance.",
+        "image": "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-engineering.png",
+        "imagePosition": "left"
+      },
+      {
+        "kicker": "Scale Reference",
+        "title": "Size Context",
+        "body": "Measured for accuracy. See specifications for full dimensions.",
+        "image": "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-size.png",
+        "imagePosition": "right"
+      },
+      {
+        "kicker": "Certificate",
+        "title": "Included",
+        "body": "Independently verified. Documented for your peace of mind.",
+        "image": "/images/pdp/diamond-tennis-bracelet/diamond-tennis-bracelet-certificate.png",
+        "imagePosition": "left"
+      }
     ],
     "modelUrl": "",
     "sortOrder": 6,

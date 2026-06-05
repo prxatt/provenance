@@ -1,14 +1,25 @@
 import { SignIn } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
 import AdminPanel from '@/app/admin/panel';
-import { isAdminEmail } from '@/lib/auth';
+import { getAdminAllowlist, isAdminEmail } from '@/lib/auth';
+import { getClerkSessionEmail } from '@/lib/clerk-session';
 
 export default async function StudioPage() {
   const hasClerk = Boolean(process.env.CLERK_SECRET_KEY && process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+  const allowlist = getAdminAllowlist();
 
   if (hasClerk) {
+    if (process.env.NODE_ENV === 'production' && allowlist.length === 0) {
+      return (
+        <main className="container-lux py-32">
+          <p className="kicker">Studio locked</p>
+          <h1 className="h2 mt-4">Allowlist not configured.</h1>
+          <p className="body mt-4 max-w-lg">Set ADMIN_ALLOWLIST_EMAILS before opening the studio in production.</p>
+        </main>
+      );
+    }
+
     const session = await auth();
-    const email = session.sessionClaims?.email as string | undefined;
     if (!session.userId) {
       return (
         <main className="flex min-h-screen items-center justify-center px-6 py-24">
@@ -16,6 +27,8 @@ export default async function StudioPage() {
         </main>
       );
     }
+
+    const email = await getClerkSessionEmail();
     if (!email || !isAdminEmail(email)) {
       return (
         <main className="container-lux py-32">
