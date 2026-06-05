@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { Product, AccessRequest, Order } from '@/lib/types';
+import { productAdminStatus } from '@/lib/catalog';
 import { money } from '@/lib/format';
 
 type AdminData = { products: Product[]; access: AccessRequest[]; orders: Order[] };
@@ -44,7 +45,7 @@ export default function AdminPanel({ clerkMode = false }: { clerkMode?: boolean 
   const [data, setData] = useState<AdminData | null>(null);
   const [audit, setAudit] = useState<{ action: string; actor: string; target?: string; createdAt: string }[]>([]);
   const [msg, setMsg] = useState('');
-  const [edit, setEdit] = useState<Product>(getBlankProduct);
+  const [edit, setEdit] = useState<Product>(() => getBlankProduct());
 
   async function load() {
     setMsg('Loading…');
@@ -143,7 +144,7 @@ export default function AdminPanel({ clerkMode = false }: { clerkMode?: boolean 
                       )}
                     </span>
                     <span className="text-sm text-white/60">
-                      {money(p.price)} · {p.published && !p.mockLayout ? 'Live' : 'Hidden'}
+                      {money(p.price)} · {productAdminStatus(p)}
                     </span>
                   </button>
                 ))}

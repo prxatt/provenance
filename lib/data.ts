@@ -30,11 +30,15 @@ export async function getProducts(all = false) {
   return all ? products : products.filter(isInventoryProduct);
 }
 
-/** Collection: verified inventory + layout samples from separate file. */
+/** Collection: verified inventory + layout samples (studio + mock-products.json). */
 export async function getCollectionCatalog() {
-  const inventory = (await getProducts(true)).filter(isInventoryProduct);
-  const mocks = await getMockProducts();
-  return [...inventory, ...mocks];
+  const all = await getProducts(true);
+  const inventory = all.filter(isInventoryProduct);
+  const studioMocks = all.filter((p) => p.mockLayout);
+  const fileMocks = await getMockProducts();
+  const studioSlugs = new Set(studioMocks.map((p) => p.slug));
+  const extraMocks = fileMocks.filter((p) => !studioSlugs.has(p.slug));
+  return [...inventory, ...studioMocks, ...extraMocks];
 }
 
 export async function getProduct(slug: string) {

@@ -170,6 +170,13 @@ async function main() {
     assert(html.includes('diamond-tennis-bracelet-master'), 'missing product image');
   });
 
+  await test('collection page includes layout samples', async () => {
+    const res = await fetch(`${BASE}/collection`);
+    assert(res.ok, `expected 200, got ${res.status}`);
+    const html = await res.text();
+    assert(html.includes('Sample Layout'), 'missing layout sample cards');
+  });
+
   await test('studio sets noindex header', async () => {
     const res = await fetch(`${BASE}/studio-provenance-private`);
     assert(res.headers.get('x-robots-tag')?.includes('noindex'), 'missing noindex header');

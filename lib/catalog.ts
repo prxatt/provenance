@@ -4,6 +4,16 @@ export function isInventoryProduct(p: Product) {
   return p.published && !p.mockLayout && p.verified;
 }
 
+export function isMockLayoutProduct(p: Product) {
+  return p.mockLayout;
+}
+
+export function productAdminStatus(p: Product) {
+  if (isInventoryProduct(p)) return 'Live';
+  if (p.mockLayout) return 'Sample layout';
+  return 'Hidden';
+}
+
 export function productCardImage(p: Product) {
   return p.cardImage || '/images/hero/hero.png';
 }
