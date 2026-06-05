@@ -74,13 +74,16 @@ export async function POST(req: Request) {
   }
 
   const products = await getProducts(true);
-  const i = parsed.data.id ? products.findIndex((p) => p.id === parsed.data.id) : -1;
+
+  const byId = parsed.data.id ? products.findIndex((p) => p.id === parsed.data.id) : -1;
+  const bySlug = products.findIndex((p) => p.slug === parsed.data.slug);
+  const i = byId >= 0 ? byId : bySlug;
   const isUpdate = i >= 0;
   const existing = isUpdate ? products[i] : undefined;
 
   const product: Product = {
     ...parsed.data,
-    id: parsed.data.id || crypto.randomUUID(),
+    id: existing?.id ?? parsed.data.id ?? crypto.randomUUID(),
     published: parsed.data.mockLayout ? false : parsed.data.published,
     featured: parsed.data.mockLayout ? false : parsed.data.featured,
     listedAt: parsed.data.listedAt || new Date().toISOString(),

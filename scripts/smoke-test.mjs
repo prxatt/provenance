@@ -87,40 +87,17 @@ async function main() {
   });
 
   await test('products API rejects duplicate slug on create', async () => {
+    const listRes = await fetch(`${BASE}/api/products`, { headers: { 'x-admin-token': ADMIN_TOKEN } });
+    assert(listRes.ok, 'products list failed');
+    const products = await listRes.json();
+    const submariner = products.find((p) => p.slug === 'rolex-submariner-date');
+    const daytona = products.find((p) => p.slug === 'rolex-daytona-116500ln');
+    assert(submariner && daytona, 'need two products for slug conflict test');
+
     const res = await fetch(`${BASE}/api/products`, {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'x-admin-token': ADMIN_TOKEN },
-      body: JSON.stringify({
-        slug: 'rolex-submariner-date',
-        brand: 'Duplicate',
-        name: 'Test',
-        ref: 'TEST',
-        price: 1,
-        type: 'Watch',
-        tag: 'Test',
-        year: 2024,
-        condition: 'New',
-        caseSize: '40mm',
-        material: 'Steel',
-        movement: 'Auto',
-        boxPapers: 'Yes',
-        location: 'NY',
-        status: 'Available',
-        published: false,
-        featured: false,
-        category: 'watches',
-        gender: 'men',
-        verified: true,
-        mockLayout: false,
-        heroImage: '/images/watches/watches.png',
-        cardImage: '/images/watches/watches.png',
-        galleryImages: [],
-        modelUrl: '',
-        description: 'test',
-        provenanceCopy: 'test',
-        sortOrder: 99,
-        listedAt: new Date().toISOString(),
-      }),
+      body: JSON.stringify({ ...daytona, slug: submariner.slug }),
     });
     assert(res.status === 400, `expected 400, got ${res.status}`);
     const data = await res.json();
@@ -223,6 +200,28 @@ async function main() {
     assert(saveRes.ok, `save failed: ${saveRes.status}`);
     const saved = await saveRes.json();
     assert(saved.featureSections?.length === tennis.featureSections.length, 'featureSections were dropped on save');
+  });
+
+  await test('admin updates existing product by slug when id missing', async () => {
+    const listRes = await fetch(`${BASE}/api/products`, { headers: { 'x-admin-token': ADMIN_TOKEN } });
+    assert(listRes.ok, 'products list failed');
+    const products = await listRes.json();
+    const target = products.find((p) => p.slug === 'rolex-submariner-date');
+    assert(target, 'submariner missing from catalog');
+    const beforeCount = products.length;
+
+    const saveRes = await fetch(`${BASE}/api/products`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-admin-token': ADMIN_TOKEN },
+      body: JSON.stringify({ ...target, id: '', description: target.description }),
+    });
+    assert(saveRes.ok, `slug update failed: ${saveRes.status}`);
+    const saved = await saveRes.json();
+    assert(saved.id === target.id, 'slug match should update existing row id');
+    assert(saved.slug === target.slug, 'slug should be unchanged');
+
+    const after = await (await fetch(`${BASE}/api/products`, { headers: { 'x-admin-token': ADMIN_TOKEN } })).json();
+    assert(after.length === beforeCount, 'slug update must not insert duplicate product');
   });
 
   await test('tennis bracelet PDP loads', async () => {
