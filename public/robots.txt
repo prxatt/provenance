@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /studio-provenance-private
+Disallow: /_studio-provenance-private
+Disallow: /admin
