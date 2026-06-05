@@ -4,18 +4,13 @@ export type CollectionFilter = 'all' | 'watches' | 'jewelry' | 'men' | 'women';
 export type CollectionSort = 'featured' | 'price-high' | 'price-low' | 'newest';
 
 function compareInventory(a: Product, b: Product, sort: CollectionSort) {
-  if (a.category !== b.category) {
-    if (a.category === 'watches') return -1;
-    if (b.category === 'watches') return 1;
-  }
-
   switch (sort) {
     case 'price-high':
       return b.price - a.price || a.sortOrder - b.sortOrder;
     case 'price-low':
       return a.price - b.price || a.sortOrder - b.sortOrder;
     case 'newest':
-      return new Date(b.listedAt).getTime() - new Date(a.listedAt).getTime();
+      return new Date(b.listedAt).getTime() - new Date(a.listedAt).getTime() || a.sortOrder - b.sortOrder;
     case 'featured':
     default:
       if (a.featured !== b.featured) return a.featured ? -1 : 1;
